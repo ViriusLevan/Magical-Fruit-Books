@@ -8,12 +8,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float mouseSensitivity = 3.5f;
     [SerializeField] bool lockCursor = true;
     [SerializeField] float walkSpeed = 6.0f;
+    [SerializeField] float jumpSpeed = 8.0f;
+    [SerializeField] float runSpeed = 12.0f;
     [SerializeField] float gravity = -13f;
     [SerializeField] [Range(0.0f, 0.5f)] float moveSmoothTime = 0.3f;
     [SerializeField] [Range(0.0f, 0.5f)] float mouseSmoothTime = 0.03f;
 
     float cameraPitch = 0.0f;
     float velocityY = 0.0f;
+    private float charHorSpeed=0.0f;
     CharacterController controller = null;
 
     Vector2 currentDir = Vector2.zero;
@@ -80,11 +83,20 @@ public class PlayerController : MonoBehaviour
         if (controller.isGrounded)
         {
             velocityY = 0.0f;
+            if(Input.GetButton("Jump")){
+                velocityY = jumpSpeed;
+            }
         }
         velocityY += gravity * Time.deltaTime;
 
+        if(Input.GetButton("Fire3")){
+            charHorSpeed=runSpeed;
+        }else{
+            charHorSpeed=walkSpeed;
+        }
+
         Vector3 velocity =
-            (transform.forward * currentDir.y + transform.right * currentDir.x) * walkSpeed
+            (transform.forward * currentDir.y + transform.right * currentDir.x) * charHorSpeed
             + Vector3.up * velocityY;
 
         controller.Move(velocity * Time.deltaTime);

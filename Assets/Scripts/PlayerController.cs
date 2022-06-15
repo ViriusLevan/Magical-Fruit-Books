@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,6 +26,12 @@ public class PlayerController : MonoBehaviour
     Vector2 currentMouseDelta = Vector2.zero;
     Vector2 currentMouseDeltaVelocity = Vector2.zero;
 
+    public enum HoldingState {None,Apple,Banana,Watermelon};
+    public HoldingState currentlyHolding = HoldingState.None;
+    public Dictionary<Book.FruitType,int> nOfFruits;
+    public TextMeshProUGUI bookNameText, appleNText,bananaNText,watermelonNText;
+    private bool isBookOpen;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -33,19 +40,106 @@ public class PlayerController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+
+        nOfFruits = new Dictionary<Book.FruitType, int>()
+        {
+          {Book.FruitType.Apple,0}
+          ,{Book.FruitType.Banana,0}
+          ,{Book.FruitType.Watermelon,0}
+        };
+        Typer.wordCompleted+=IncreaseFruit;
+        Typer.bookClosed+=SetBookBoolFalse;
+    }
+
+    private void SetBookBoolFalse()
+    {
+        isBookOpen=false;
+    }
+
+    private void IncreaseFruit(Book.FruitType ft, int i)
+    {
+        nOfFruits[ft]+=i;
+        UpdateNText();
+    }
+
+    private void UpdateNText()
+    {
+        appleNText.text =       nOfFruits[Book.FruitType.Apple].ToString();
+        bananaNText.text =      nOfFruits[Book.FruitType.Banana].ToString();
+        watermelonNText.text =  nOfFruits[Book.FruitType.Watermelon].ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateMouseLook();
-        UpdateMovement();
-        WeaponInput();
+        if(!isBookOpen){
+            UpdateMouseLook();
+            UpdateMovement();
+            ObjectRaycast();
+            InteractInput();
+            WeaponInput();
+        }
     }
 
     void WeaponInput() {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+        }
+    }
+
+    void InteractInput()
+    {
+        if(isBookOpen)
+        {
+            return;
+        }
+        RaycastHit hit;
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f))
+            {
+                if(hit.transform.GetComponent<Book>()!=null)
+                {
+                    bookNameText.gameObject.SetActive(true);
+                    Book temp = hit.transform.GetComponent<Book>();
+                    temp.OpenBook();
+                    isBookOpen=true;
+                    bookNameText.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    void ObjectRaycast()
+    {
+        RaycastHit hit;
+        if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f))
+        {
+            if(hit.transform.GetComponent<Book>()!=null)
+            {
+                bookNameText.gameObject.SetActive(true);
+                Book temp = hit.transform.GetComponent<Book>();
+                if(temp.fruitBookType==Book.FruitType.Apple)
+                {
+                    bookNameText.text="Apple";
+                }
+                else if(temp.fruitBookType==Book.FruitType.Banana)
+                {
+                    bookNameText.text="Banana";
+                }
+                else
+                {
+                    bookNameText.text="Watermelon";
+                }
+            }
+            else
+            {
+                bookNameText.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            bookNameText.gameObject.SetActive(false);
         }
     }
 

@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Book : MonoBehaviour
 {
+    public delegate void OnBookOpened(FruitType ft, int fruitN, Book b);
+    public static event OnBookOpened openedBook;
+
+    public enum FruitType{Apple, Banana, Watermelon};
+    public FruitType fruitBookType;
+    public int fruitN;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +21,15 @@ public class Book : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void OpenBook()
+    {
+        openedBook?.Invoke(fruitBookType, fruitN, this);
+    }
+
+    public void DestroyBook()
+    {
+        Destroy(this.gameObject);
     }
 }

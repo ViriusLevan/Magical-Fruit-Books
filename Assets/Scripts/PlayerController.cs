@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,10 +16,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [Range(0.0f, 0.5f)] float moveSmoothTime = 0.3f;
     [SerializeField] [Range(0.0f, 0.5f)] float mouseSmoothTime = 0.03f;
 
+    [SerializeField] private float fireCooldown=0.5f;
+    private float fireCounter=0f;
+
     float cameraPitch = 0.0f;
     float velocityY = 0.0f;
     private float charHorSpeed=0.0f;
-    CharacterController controller = null;
+    [SerializeField]CharacterController controller;
 
     Vector2 currentDir = Vector2.zero;
     Vector2 currentDirVelocity = Vector2.zero;
@@ -26,12 +30,15 @@ public class PlayerController : MonoBehaviour
     Vector2 currentMouseDelta = Vector2.zero;
     Vector2 currentMouseDeltaVelocity = Vector2.zero;
 
-    public enum HoldingState {None,Apple,Banana,Watermelon};
-    public HoldingState currentlyHolding = HoldingState.None;
+    public Transform holdingPoint;
+    public Book.FruitType currentlyHolding = Book.FruitType.Apple;
+    public GameObject[] fruitsHeld;
+    public GameObject[] fruits;
     public Dictionary<Book.FruitType,int> nOfFruits;
     public TextMeshProUGUI bookNameText, appleNText,bananaNText,watermelonNText;
     private bool isBookOpen;
 
+    private float sWheelInput=0f;
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -49,6 +56,7 @@ public class PlayerController : MonoBehaviour
         };
         Typer.wordCompleted+=IncreaseFruit;
         Typer.bookClosed+=SetBookBoolFalse;
+        SwitchFruitModel((int)currentlyHolding);
     }
 
     private void SetBookBoolFalse()
@@ -82,8 +90,72 @@ public class PlayerController : MonoBehaviour
     }
 
     void WeaponInput() {
-        if (Input.GetKeyDown(KeyCode.Q))
+        sWheelInput = Input.GetAxis("Mouse ScrollWheel");
+        if (Input.GetKeyDown(KeyCode.Q)
+            || sWheelInput>0)
         {
+            HoldingStateAdvance(true);
+        }
+        else if(sWheelInput<0)
+        {
+            HoldingStateAdvance(false);
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            if(nOfFruits[currentlyHolding]>-1 && fireCounter<=0)
+            {
+                FireFruit();
+                fireCounter=fireCooldown;
+            }
+        }
+        if(fireCounter>0){fireCounter-=Time.deltaTime;}
+    }
+
+    private void FireFruit()
+    {
+        int ind = (int)currentlyHolding;
+        //Instantiate new one right next to the respective fruit
+        Vector3 newPos = playerCamera.transform.position + (playerCamera.transform.forward*1f);
+        Instantiate(fruits[ind], newPos, playerCamera.transform.rotation);
+    }
+
+    private void HoldingStateAdvance(bool next)
+    {
+        if(next)
+        {
+            if((int)currentlyHolding < Enum.GetValues(typeof(Book.FruitType)).Length-1)
+            {
+                int nextEnumI = (int)currentlyHolding+1;
+                currentlyHolding = ((Book.FruitType)nextEnumI);
+            }else{
+                currentlyHolding = Book.FruitType.Apple;  
+            }
+        }
+        else if(!next)
+        {
+            if((int)currentlyHolding>0)
+            {
+                int nextEnumI = (int)currentlyHolding-1;
+                currentlyHolding = ((Book.FruitType)nextEnumI);
+            }else{
+                currentlyHolding = Book.FruitType.Watermelon;  
+            }
+        }
+        SwitchFruitModel((int)currentlyHolding);
+    }
+
+    private void SwitchFruitModel(int index)
+    {
+        for (int i = 0; i < fruitsHeld.Length; i++)
+        {
+            if(i!=index)
+            {
+                fruitsHeld[i].SetActive(false);
+            }
+            else
+            {
+                fruitsHeld[i].SetActive(true);
+            }
         }
     }
 

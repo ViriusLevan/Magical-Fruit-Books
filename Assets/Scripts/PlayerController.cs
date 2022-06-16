@@ -97,6 +97,8 @@ public class PlayerController : MonoBehaviour
     private void Die(){
         isDead=true;
         goPanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void UpdateNText()
@@ -222,10 +224,9 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f))
         {
-            if(hit.transform.GetComponent<Book>()!=null)
+            if(hit.transform.TryGetComponent(out Book temp))
             {
                 bookNameText.gameObject.SetActive(true);
-                Book temp = hit.transform.GetComponent<Book>();
                 if(temp.fruitBookType==Book.FruitType.Apple)
                 {
                     bookNameText.text="Apple \nPress E to Open";
@@ -244,8 +245,20 @@ public class PlayerController : MonoBehaviour
                 bookNameText.gameObject.SetActive(false);
             }
         }
-        else
+        else if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 50f))
         {
+            if(hit.transform.TryGetComponent(out Robot r))
+            {
+                bookNameText.gameObject.SetActive(true);
+                Robot temp = hit.transform.GetComponent<Robot>();
+                bookNameText.text=$"{hit.transform.gameObject.name} \nHP:{temp.health}";
+            }
+            else
+            {
+                bookNameText.gameObject.SetActive(false);
+            }
+        }
+        else{
             bookNameText.gameObject.SetActive(false);
         }
     }

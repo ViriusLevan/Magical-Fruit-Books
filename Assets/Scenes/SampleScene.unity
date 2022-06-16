@@ -2203,7 +2203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: 30
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2956,7 +2956,7 @@ MonoBehaviour:
   moveSmoothTime: 0.3
   mouseSmoothTime: 0.03
   fireCooldown: 0.5
-  playerHealth: 100
+  playerHealth: 30
   controller: {fileID: 817053342}
   holdingPoint: {fileID: 1298493175}
   currentlyHolding: 0
@@ -2979,8 +2979,8 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 4260915843110444424, guid: f2b52020616ac454a847d2d3a9243f99, type: 3}
   - {fileID: 971629405762384182, guid: 251ec6902ea28824689de558e212a73a, type: 3}
-  spawnCooldown: 20
-  spawnCDMinimum: 5
+  spawnCooldown: 12
+  spawnCDMinimum: 4
   scoreText: {fileID: 352978190}
   bookCooldown: 7
   bookPrefab: {fileID: 9066629610449093806, guid: f47eab00cfdb9f344902fc0eeb061310,
@@ -6204,6 +6204,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 9066629610449093803, guid: f47eab00cfdb9f344902fc0eeb061310,
         type: 3}
+      propertyPath: fruitN
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9066629610449093803, guid: f47eab00cfdb9f344902fc0eeb061310,
+        type: 3}
       propertyPath: fruitBookType
       value: 1
       objectReference: {fileID: 0}
@@ -6215,17 +6220,17 @@ PrefabInstance:
     - target: {fileID: 9066629610449093805, guid: f47eab00cfdb9f344902fc0eeb061310,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -51
       objectReference: {fileID: 0}
     - target: {fileID: 9066629610449093805, guid: f47eab00cfdb9f344902fc0eeb061310,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.6
       objectReference: {fileID: 0}
     - target: {fileID: 9066629610449093805, guid: f47eab00cfdb9f344902fc0eeb061310,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 9066629610449093805, guid: f47eab00cfdb9f344902fc0eeb061310,
         type: 3}

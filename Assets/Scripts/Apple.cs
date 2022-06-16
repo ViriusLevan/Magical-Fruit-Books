@@ -20,7 +20,7 @@ public class Apple : Fruit
     {
         if(!collision.gameObject.CompareTag("Player"))
         {
-            if (TryGetComponent(out IDamageable dmgInterface))
+            if (collision.gameObject.TryGetComponent(out IDamageable dmgInterface))
             {
                 dmgInterface.TakeDamage(damageAmount);
             }

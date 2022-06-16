@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float fireCooldown=0.5f;
     private float fireCounter=0f;
 
+    [SerializeField] private int playerHealth=100;
+    private bool isDead=false;
+
     float cameraPitch = 0.0f;
     float velocityY = 0.0f;
     private float charHorSpeed=0.0f;
@@ -70,6 +73,19 @@ public class PlayerController : MonoBehaviour
         UpdateNText();
     }
 
+    public void TakeDamage(int damage)
+    {
+        playerHealth-=damage;
+        if(playerHealth<=0)
+        {
+            Die();
+        }
+    }
+    private void Die(){
+        isDead=true;
+        //TODO open gameover menu
+    }
+
     private void UpdateNText()
     {
         appleNText.text =       nOfFruits[Book.FruitType.Apple].ToString();
@@ -80,12 +96,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!isBookOpen){
-            UpdateMouseLook();
-            UpdateMovement();
-            ObjectRaycast();
-            InteractInput();
-            WeaponInput();
+        if(!isDead){
+            if(!isBookOpen){
+                UpdateMouseLook();
+                UpdateMovement();
+                ObjectRaycast();
+                InteractInput();
+                WeaponInput();
+            }
         }
     }
 
@@ -102,6 +120,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            //TODO change to 0 after finishing debug
             if(nOfFruits[currentlyHolding]>-1 && fireCounter<=0)
             {
                 FireFruit();
@@ -114,9 +133,9 @@ public class PlayerController : MonoBehaviour
     private void FireFruit()
     {
         int ind = (int)currentlyHolding;
-        //Instantiate new one right next to the respective fruit
         Vector3 newPos = playerCamera.transform.position + (playerCamera.transform.forward*1f);
         Instantiate(fruits[ind], newPos, playerCamera.transform.rotation);
+        UpdateNText();
     }
 
     private void HoldingStateAdvance(bool next)
@@ -267,4 +286,8 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
     }
+
+    //I'm tired
+    //
+    
 }

@@ -60,6 +60,16 @@ public class PlayerController : MonoBehaviour
         Typer.wordCompleted+=IncreaseFruit;
         Typer.bookClosed+=SetBookBoolFalse;
         SwitchFruitModel((int)currentlyHolding);
+        //TODO move to manager
+        Robot.robotDeath+=IncreaseScore;
+    }
+
+    void OnDestroy()
+    {
+        Typer.wordCompleted-=IncreaseFruit;
+        Typer.bookClosed-=SetBookBoolFalse;
+        //TODO move to manager
+        Robot.robotDeath-=IncreaseScore;
     }
 
     private void SetBookBoolFalse()
@@ -73,9 +83,12 @@ public class PlayerController : MonoBehaviour
         UpdateNText();
     }
 
+    public TextMeshProUGUI playerHealthN;
+
     public void TakeDamage(int damage)
     {
         playerHealth-=damage;
+        playerHealthN.text=playerHealth.ToString();
         if(playerHealth<=0)
         {
             Die();
@@ -83,7 +96,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Die(){
         isDead=true;
-        //TODO open gameover menu
+        goPanel.SetActive(true);
     }
 
     private void UpdateNText()
@@ -104,6 +117,9 @@ public class PlayerController : MonoBehaviour
                 InteractInput();
                 WeaponInput();
             }
+            //TODO move these to manager
+            SpawnBook();
+            SpawnEnemies();
         }
     }
 
@@ -120,8 +136,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //TODO change to 0 after finishing debug
-            if(nOfFruits[currentlyHolding]>-1 && fireCounter<=0)
+            if(nOfFruits[currentlyHolding]>0 && fireCounter<=0)
             {
                 FireFruit();
                 fireCounter=fireCooldown;
@@ -135,6 +150,7 @@ public class PlayerController : MonoBehaviour
         int ind = (int)currentlyHolding;
         Vector3 newPos = playerCamera.transform.position + (playerCamera.transform.forward*1f);
         Instantiate(fruits[ind], newPos, playerCamera.transform.rotation);
+        nOfFruits[currentlyHolding]-=1;
         UpdateNText();
     }
 
@@ -212,15 +228,15 @@ public class PlayerController : MonoBehaviour
                 Book temp = hit.transform.GetComponent<Book>();
                 if(temp.fruitBookType==Book.FruitType.Apple)
                 {
-                    bookNameText.text="Apple";
+                    bookNameText.text="Apple \nPress E to Open";
                 }
                 else if(temp.fruitBookType==Book.FruitType.Banana)
                 {
-                    bookNameText.text="Banana";
+                    bookNameText.text="Banana \nPress E to Open";
                 }
                 else
                 {
-                    bookNameText.text="Watermelon";
+                    bookNameText.text="Watermelon \nPress E to Open";
                 }
             }
             else
@@ -288,6 +304,63 @@ public class PlayerController : MonoBehaviour
     }
 
     //I'm tired
-    //
-    
+    //TODO move these to gamemanager after game jam finishes
+    [Header("Manager")]
+    [SerializeField]private Transform[] spawnPoints;
+    [SerializeField]private GameObject[] enemyPrefabs;
+    [SerializeField]private float spawnCooldown=20f;
+    [SerializeField]private float spawnCDMinimum=5f;
+    private float spawnCountdown = 0f;
+    private int score=0;
+    [SerializeField]private TextMeshProUGUI scoreText;
+
+    [SerializeField]private float bookCooldown=7f;
+    private float bookCountdown=0f;
+    [SerializeField] private GameObject bookPrefab;
+    [SerializeField] private GameObject goPanel;
+
+    public void IncreaseScore(int increment)
+    {
+        score+=increment;
+        scoreText.text=score.ToString();
+    }
+
+    private void SpawnEnemies(){
+        if(spawnCountdown>0f)
+        {
+            spawnCountdown-=Time.deltaTime;
+        }
+        else
+        {
+            spawnCountdown=spawnCooldown;
+            if(spawnCooldown>spawnCDMinimum+0.5f)
+                spawnCooldown-=0.5f;
+            int rngPoint = UnityEngine.Random.Range(0,2);
+            int rngType = UnityEngine.Random.Range(0,2);
+            Instantiate(enemyPrefabs[rngType], spawnPoints[rngPoint].position, Quaternion.identity);
+        }
+    }
+
+    //y30 z75 x40->x-40
+    //y30 z-75 x40->x-40
+    private void SpawnBook(){
+        if(bookCountdown>0f)
+        {
+            bookCountdown-=Time.deltaTime;
+        }else
+        {
+            bookCountdown=bookCooldown;
+            int rngLR = UnityEngine.Random.Range(0,2);
+            int rngX = UnityEngine.Random.Range(-40,41);
+            int rngType = UnityEngine.Random.Range(0,3);
+            Vector3 newPos = new Vector3(rngX, 40, rngLR>0?75:-75);
+            GameObject inst = Instantiate(bookPrefab, newPos, Quaternion.identity);
+            inst.GetComponent<Book>().SwitchBookType(rngType);
+        }
+    }
+
+    public void RestartButton()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
 }

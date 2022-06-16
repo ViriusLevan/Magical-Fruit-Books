@@ -26,6 +26,11 @@ public class Typer : MonoBehaviour
         Book.openedBook += OpenBook;
     }
 
+    void OnDestroy()
+    {
+        Book.openedBook -= OpenBook;
+    }
+
     void Update()
     {
         if(isBookOpen){

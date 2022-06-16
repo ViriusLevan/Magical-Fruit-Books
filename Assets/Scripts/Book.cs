@@ -23,6 +23,11 @@ public class Book : MonoBehaviour
         
     }
 
+    public void SwitchBookType(int i){
+        fruitBookType = (FruitType)i;
+        fruitN = Random.Range(1,4);
+    }
+
     public void OpenBook()
     {
         openedBook?.Invoke(fruitBookType, fruitN, this);

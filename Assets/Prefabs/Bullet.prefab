@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selfRB: {fileID: 986476190142395825}
-  forwardSpeed: 15
+  forwardSpeed: 8
   damage: 3
 --- !u!54 &986476190142395825
 Rigidbody:

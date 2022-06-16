@@ -39,7 +39,7 @@ public class Watermelon : Fruit
                         explosionForce, transform.position, explosionRadius);
                 }
 
-                if (TryGetComponent(out IDamageable dmgInterface))
+                if (collision.gameObject.TryGetComponent(out IDamageable dmgInterface))
                 {
                     dmgInterface.TakeDamage(damageAmount);
                 }

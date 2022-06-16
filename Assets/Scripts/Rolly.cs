@@ -11,6 +11,9 @@ public class Rolly : Robot
     // Start is called before the first frame update
     void Start()
     {
+        scoreTable = new Dictionary<EnemyType, int>(){
+            {EnemyType.Cylin,8},{EnemyType.Rolly,5}
+        };
         directions = new List<Vector3>(){
             Vector3.forward
             ,new Vector3(1,0,1)
@@ -50,6 +53,7 @@ public class Rolly : Robot
         if(col.gameObject.CompareTag("Player"))
         {
             //Have player take damage
+            col.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
         }
     }
 

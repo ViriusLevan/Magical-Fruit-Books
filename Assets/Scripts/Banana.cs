@@ -19,12 +19,11 @@ public class Banana : Fruit
     {
         if(!collision.gameObject.CompareTag("Player"))
         {
-            if (TryGetComponent(out IDamageable dmgInterface))
+            if (collision.gameObject.TryGetComponent(out IDamageable dmgInterface))
             {
                 dmgInterface.TakeDamage(damageAmount);
             }
 
-            
             //TODO play hit sound
             Destroy(gameObject);
         }

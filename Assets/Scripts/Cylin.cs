@@ -10,9 +10,13 @@ public class Cylin : Robot
     [SerializeField] private float firingCooldown=2f;
     [SerializeField] private float maxFiringDist = 30f;
     private float firingCountdown=0f;
+    private Vector3 aimModification = new Vector3(0,-1,0);
     // Start is called before the first frame update
     void Start()
     {
+        scoreTable = new Dictionary<EnemyType, int>(){
+            {EnemyType.Cylin,8},{EnemyType.Rolly,5}
+        };
         if(target==null){
             target = GameObject.FindGameObjectWithTag("Player").transform;
         }
@@ -36,7 +40,7 @@ public class Cylin : Robot
     private void TurnToTarget()
     {
         //Rotating forward transform to direction of the player
-        Vector3 direction = target.position - selfRB.position;
+        Vector3 direction = target.position+aimModification - selfRB.position;
         direction.Normalize();
         Vector3 rotateToPlayer = Vector3.Cross(transform.forward, direction);
         rotateToPlayer = Vector3.Project(rotateToPlayer, transform.up);
@@ -67,8 +71,9 @@ public class Cylin : Robot
 
     private void CheckAngle()
     {
-        float forwardAngle = Vector3.Angle(transform.forward, target.position);
-        if(forwardAngle<=45f && firingCountdown<=0)
+        float forwardAngle = Vector3.Angle(firingPoint.transform.forward
+            , (target.position+aimModification-transform.position));
+        if(forwardAngle<=5f && firingCountdown<=0)
         {
             Fire();
             firingCountdown = firingCooldown;

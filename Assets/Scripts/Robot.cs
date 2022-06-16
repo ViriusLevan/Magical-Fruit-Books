@@ -13,7 +13,7 @@ public abstract class Robot : MonoBehaviour, IDamageable
     {
         Cylin, Rolly
     }
-    private Dictionary<EnemyType,int> scoreTable;
+    protected Dictionary<EnemyType,int> scoreTable;
     public EnemyType et;
 
     // Start is called before the first frame update

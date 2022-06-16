@@ -7,7 +7,7 @@ public class WordBank : MonoBehaviour
 {
     private List<string> originalWords = new List<string>()
     {
-        "Fruits","Delicious","Vibrant"
+        "fruity","fresh","colorful","sweet","verdant","delicious","green","ripe","nutritious"
     };
 
     private List<string> workingWords = new List<string>();

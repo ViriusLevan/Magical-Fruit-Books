@@ -10,6 +10,9 @@ public class Book : MonoBehaviour
     public enum FruitType{Apple, Banana, Watermelon};
     public FruitType fruitBookType;
     public int fruitN;
+    
+    public delegate void OnBookDestroyed();
+    public static event OnBookDestroyed bookDestroyed;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +44,7 @@ public class Book : MonoBehaviour
 
     public void DestroyBook()
     {
+        bookDestroyed?.Invoke();
         Destroy(this.gameObject);
     }
 }

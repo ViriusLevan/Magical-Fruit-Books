@@ -174,11 +174,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11bd4622e4f8eb14ba033ea548ea9ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movespeed: 5
+  movespeed: 15
   turnRate: 20
   accelForce: 10
   health: 6
   selfRB: {fileID: 1316533508355045054}
+  et: 0
   target: {fileID: 0}
   firingPoint: {fileID: 3856227348223456994}
   bullet: {fileID: 7289369693382198050, guid: b5e186c253bdee547bea549edfb2b91e, type: 3}

@@ -21,6 +21,11 @@ public class GameManager : MonoBehaviour
     private bool playerIsDead=false;
     
     [SerializeField] private TextMeshProUGUI faceText, appleNText,bananaNText,watermelonNText;
+    private int enemyCount=2;
+    private int bookCount=5;
+    [SerializeField] private int enemyLimit=50;
+    [SerializeField] private int bookLimit =100;
+    [SerializeField] private Transform enemyParent, bookParent;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +36,7 @@ public class GameManager : MonoBehaviour
         PlayerController.changeFaceText+=ChangeFaceText;
         PlayerController.hideFaceText+=HideFaceText;
         PlayerController.showFaceText+=ShowFaceText;
+        Book.bookDestroyed+=ReduceBookCount;
     }
 
     void OnDestroy(){
@@ -40,6 +46,7 @@ public class GameManager : MonoBehaviour
         PlayerController.changeFaceText-=ChangeFaceText;
         PlayerController.hideFaceText-=HideFaceText;
         PlayerController.showFaceText-=ShowFaceText;
+        Book.bookDestroyed-=ReduceBookCount;
     }
 
     // Update is called once per frame
@@ -50,7 +57,6 @@ public class GameManager : MonoBehaviour
             SpawnEnemies();
         }
     }
-
     
     public void PlayerDeath(){
         playerIsDead=true;
@@ -61,6 +67,7 @@ public class GameManager : MonoBehaviour
 
     public void IncreaseScore(int increment)
     {
+        enemyCount-=1;
         score+=increment;
         scoreText.text=score.ToString();
     }
@@ -72,16 +79,28 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            spawnCountdown=spawnCooldown;
-            if(spawnCooldown>spawnCDMinimum+0.5f)
-                spawnCooldown-=0.5f;
-            int rngPoint = UnityEngine.Random.Range(0,2);
-            int rngType = UnityEngine.Random.Range(0,2);
-            GameObject inst = Instantiate(enemyPrefabs[rngType], spawnPoints[rngPoint].position, Quaternion.identity);
-            inst.name = inst.name.Replace("(Clone)","").Trim();
+            if(enemyCount<enemyLimit){
+                //chance to immediately spawn another enemy
+                if(Random.Range(0,10)>6)
+                {
+                    spawnCountdown=spawnCooldown;
+                }
+                if(spawnCooldown>spawnCDMinimum+0.5f)
+                    spawnCooldown-=0.5f;
+                int rngPoint = UnityEngine.Random.Range(0,2);
+                int rngType = UnityEngine.Random.Range(0,2);
+                GameObject inst = Instantiate(enemyPrefabs[rngType], spawnPoints[rngPoint].position, Quaternion.identity, enemyParent);
+                inst.name = inst.name.Replace("(Clone)","").Trim();
+            }
         }
     }
 
+    private void ReduceBookCount()
+    {
+        bookCount-=1;
+    }
+
+//Spawn Area
     //y30 z75 x40->x-40
     //y30 z-75 x40->x-40
     private void SpawnBook(){
@@ -90,13 +109,21 @@ public class GameManager : MonoBehaviour
             bookCountdown-=Time.deltaTime;
         }else
         {
-            bookCountdown=bookCooldown;
-            int rngLR = UnityEngine.Random.Range(0,2);
-            int rngX = UnityEngine.Random.Range(-40,41);
-            int rngType = UnityEngine.Random.Range(0,3);
-            Vector3 newPos = new Vector3(rngX, 40, rngLR>0?75:-75);
-            GameObject inst = Instantiate(bookPrefab, newPos, Quaternion.identity);
-            inst.GetComponent<Book>().SwitchBookType(rngType);
+            if(bookCount<bookLimit){
+                //chance to immediately spawn another book
+                if(Random.Range(0,10)>6)
+                {
+                    spawnCountdown=spawnCooldown;
+                }
+                bookCountdown=bookCooldown;
+                int rngLR = UnityEngine.Random.Range(0,2);
+                int rngX = UnityEngine.Random.Range(-40,41);
+                int rngType = UnityEngine.Random.Range(0,3);
+                Vector3 newPos = new Vector3(rngX, 40, rngLR>0?75:-75);
+                GameObject inst = Instantiate(bookPrefab, newPos, Quaternion.identity, bookParent);
+                inst.GetComponent<Book>().SwitchBookType(rngType);
+                bookCount+=1;
+            }
         }
     }
 

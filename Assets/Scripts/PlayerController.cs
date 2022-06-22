@@ -9,9 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform playerCamera = null;
     [SerializeField] float mouseSensitivity = 3.5f;
     [SerializeField] bool lockCursor = true;
-    [SerializeField] float walkSpeed = 6.0f;
-    [SerializeField] float jumpSpeed = 8.0f;
-    [SerializeField] float runSpeed = 12.0f;
+    [SerializeField] float jumpSpeed = 12.0f;
     [SerializeField] float gravity = -13f;
     [SerializeField] [Range(0.0f, 0.5f)] float moveSmoothTime = 0.3f;
     [SerializeField] [Range(0.0f, 0.5f)] float mouseSmoothTime = 0.03f;
@@ -23,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     float cameraPitch = 0.0f;
     float velocityY = 0.0f;
-    private float charHorSpeed=0.0f;
+    private float charHorSpeed=12.0f;
     [SerializeField]CharacterController controller;
 
     Vector2 currentDir = Vector2.zero;
@@ -187,7 +185,7 @@ public class PlayerController : MonoBehaviour
     private void ObjectRaycast()
     {
         RaycastHit hit;
-        if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f))
+        if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 10f))
         {
             if(hit.transform.TryGetComponent(out Book temp))
             {
@@ -277,12 +275,6 @@ public class PlayerController : MonoBehaviour
             }
         }
         velocityY += gravity * Time.deltaTime;
-
-        if(Input.GetButton("Fire3")){
-            charHorSpeed=runSpeed;
-        }else{
-            charHorSpeed=walkSpeed;
-        }
 
         Vector3 velocity =
             (transform.forward * currentDir.y + transform.right * currentDir.x) * charHorSpeed

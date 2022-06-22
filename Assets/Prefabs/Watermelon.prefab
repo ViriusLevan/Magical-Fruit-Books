@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be1ad2ff3ca3ce84ba66a2d0a5eeff1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 20
+  forwardSpeed: 25
   damageAmount: 10
   hitSound: {fileID: 0}
   selfRB: {fileID: 8286990786558620007}

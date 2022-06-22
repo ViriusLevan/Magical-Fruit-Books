@@ -88,9 +88,9 @@ public class Typer : MonoBehaviour
 
             if(IsWordComplete())
             {
+                bookPendingDestruction.DestroyBook();
                 wordCompleted?.Invoke(fruitToClaim, fruitClaimN);
                 CloseBook();
-                bookPendingDestruction.DestroyBook();
             }
         }
     }

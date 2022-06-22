@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
     private float fireCounter=0f;
 
     [SerializeField] private int playerHealth=100;
-    private bool isDead=false;
 
     float cameraPitch = 0.0f;
     float velocityY = 0.0f;
@@ -38,8 +37,16 @@ public class PlayerController : MonoBehaviour
     public GameObject[] fruitsHeld;
     public GameObject[] fruits;
     public Dictionary<Book.FruitType,int> nOfFruits;
-    public TextMeshProUGUI bookNameText, appleNText,bananaNText,watermelonNText;
     private bool isBookOpen;
+    public delegate void OnPlayerDeath();
+    public static event OnPlayerDeath playerDies;
+    public delegate void OnFruitNChanged(Dictionary<Book.FruitType,int> nFruits);
+    public static event OnFruitNChanged fruitNChanged;
+
+    public delegate void OnDifferentHitBook(string bookname);
+    public static event OnDifferentHitBook changeFaceText;
+    public delegate void OnTextNotNeeded();
+    public static event OnTextNotNeeded hideFaceText,showFaceText;
 
     private float sWheelInput=0f;
     void Start()
@@ -60,16 +67,12 @@ public class PlayerController : MonoBehaviour
         Typer.wordCompleted+=IncreaseFruit;
         Typer.bookClosed+=SetBookBoolFalse;
         SwitchFruitModel((int)currentlyHolding);
-        //TODO move to manager
-        Robot.robotDeath+=IncreaseScore;
     }
 
     void OnDestroy()
     {
         Typer.wordCompleted-=IncreaseFruit;
         Typer.bookClosed-=SetBookBoolFalse;
-        //TODO move to manager
-        Robot.robotDeath-=IncreaseScore;
     }
 
     private void SetBookBoolFalse()
@@ -80,7 +83,7 @@ public class PlayerController : MonoBehaviour
     private void IncreaseFruit(Book.FruitType ft, int i)
     {
         nOfFruits[ft]+=i;
-        UpdateNText();
+        fruitNChanged?.Invoke(nOfFruits);
     }
 
     public TextMeshProUGUI playerHealthN;
@@ -91,41 +94,24 @@ public class PlayerController : MonoBehaviour
         playerHealthN.text=playerHealth.ToString();
         if(playerHealth<=0)
         {
-            Die();
+            playerDies?.Invoke();
         }
     }
-    private void Die(){
-        isDead=true;
-        goPanel.SetActive(true);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
 
-    private void UpdateNText()
-    {
-        appleNText.text =       nOfFruits[Book.FruitType.Apple].ToString();
-        bananaNText.text =      nOfFruits[Book.FruitType.Banana].ToString();
-        watermelonNText.text =  nOfFruits[Book.FruitType.Watermelon].ToString();
-    }
 
     // Update is called once per frame
     void Update()
     {
-        if(!isDead){
-            if(!isBookOpen){
-                UpdateMouseLook();
-                UpdateMovement();
-                ObjectRaycast();
-                InteractInput();
-                WeaponInput();
-            }
-            //TODO move these to manager
-            SpawnBook();
-            SpawnEnemies();
+        if(!isBookOpen){
+            UpdateMouseLook();
+            UpdateMovement();
+            ObjectRaycast();
+            WeaponInput();
         }
     }
 
-    void WeaponInput() {
+    
+    private void WeaponInput() {
         sWheelInput = Input.GetAxis("Mouse ScrollWheel");
         if (Input.GetKeyDown(KeyCode.Q)
             || sWheelInput>0)
@@ -153,7 +139,7 @@ public class PlayerController : MonoBehaviour
         Vector3 newPos = playerCamera.transform.position + (playerCamera.transform.forward*1f);
         Instantiate(fruits[ind], newPos, playerCamera.transform.rotation);
         nOfFruits[currentlyHolding]-=1;
-        UpdateNText();
+        fruitNChanged?.Invoke(nOfFruits);
     }
 
     private void HoldingStateAdvance(bool next)
@@ -196,74 +182,62 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void InteractInput()
-    {
-        if(isBookOpen)
-        {
-            return;
-        }
-        RaycastHit hit;
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f))
-            {
-                if(hit.transform.GetComponent<Book>()!=null)
-                {
-                    bookNameText.gameObject.SetActive(true);
-                    Book temp = hit.transform.GetComponent<Book>();
-                    temp.OpenBook();
-                    isBookOpen=true;
-                    bookNameText.gameObject.SetActive(false);
-                }
-            }
-        }
-    }
 
-    void ObjectRaycast()
+    private String lastBookName="", lastRobotName="";
+    private void ObjectRaycast()
     {
         RaycastHit hit;
         if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 5f))
         {
             if(hit.transform.TryGetComponent(out Book temp))
             {
-                bookNameText.gameObject.SetActive(true);
-                if(temp.fruitBookType==Book.FruitType.Apple)
+                if(!lastBookName.Equals(temp.name))
                 {
-                    bookNameText.text="Apple \nPress E to Open";
-                }
-                else if(temp.fruitBookType==Book.FruitType.Banana)
-                {
-                    bookNameText.text="Banana \nPress E to Open";
+                    lastBookName = temp.name;
+                    changeFaceText?.Invoke($"{lastBookName}\nPress E to interact");
                 }
                 else
                 {
-                    bookNameText.text="Watermelon \nPress E to Open";
+                    showFaceText();
+                }
+                if(Input.GetKeyDown(KeyCode.E) && !isBookOpen)
+                {
+                    temp.OpenBook();
+                    isBookOpen=true;
+                    hideFaceText?.Invoke();
                 }
             }
             else
             {
-                bookNameText.gameObject.SetActive(false);
+                hideFaceText?.Invoke();
             }
         }
         else if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 50f))
         {
             if(hit.transform.TryGetComponent(out Robot r))
             {
-                bookNameText.gameObject.SetActive(true);
-                Robot temp = hit.transform.GetComponent<Robot>();
-                bookNameText.text=$"{hit.transform.gameObject.name} \nHP:{temp.health}";
+                if(!lastRobotName.Equals($"{hit.transform.gameObject.name} \nHP:{r.health}"))
+                {
+                    lastRobotName = $"{hit.transform.gameObject.name} \nHP:{r.health}";
+                    changeFaceText?.Invoke(lastRobotName);
+                }
+                else
+                {
+                    showFaceText();
+                }
             }
             else
             {
-                bookNameText.gameObject.SetActive(false);
+                hideFaceText?.Invoke();
             }
         }
         else{
-            bookNameText.gameObject.SetActive(false);
+            hideFaceText?.Invoke();
         }
     }
 
-    void UpdateMouseLook()
+    
+    private void UpdateMouseLook()
     {
         Vector2 targetMouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         currentMouseDelta =
@@ -285,7 +259,8 @@ public class PlayerController : MonoBehaviour
         //Debug.Log($"{before}->{after} when X={currentMouseDelta.x} and Y={cameraPitch}");
     }
 
-    void UpdateMovement()
+    
+    private void UpdateMovement()
     {
         Vector2 targetDir =
             new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -314,66 +289,5 @@ public class PlayerController : MonoBehaviour
             + Vector3.up * velocityY;
 
         controller.Move(velocity * Time.deltaTime);
-    }
-
-    //I'm tired
-    //TODO move these to gamemanager after game jam finishes
-    [Header("Manager")]
-    [SerializeField]private Transform[] spawnPoints;
-    [SerializeField]private GameObject[] enemyPrefabs;
-    [SerializeField]private float spawnCooldown=20f;
-    [SerializeField]private float spawnCDMinimum=5f;
-    private float spawnCountdown = 0f;
-    private int score=0;
-    [SerializeField]private TextMeshProUGUI scoreText;
-
-    [SerializeField]private float bookCooldown=7f;
-    private float bookCountdown=0f;
-    [SerializeField] private GameObject bookPrefab;
-    [SerializeField] private GameObject goPanel;
-
-    public void IncreaseScore(int increment)
-    {
-        score+=increment;
-        scoreText.text=score.ToString();
-    }
-
-    private void SpawnEnemies(){
-        if(spawnCountdown>0f)
-        {
-            spawnCountdown-=Time.deltaTime;
-        }
-        else
-        {
-            spawnCountdown=spawnCooldown;
-            if(spawnCooldown>spawnCDMinimum+0.5f)
-                spawnCooldown-=0.5f;
-            int rngPoint = UnityEngine.Random.Range(0,2);
-            int rngType = UnityEngine.Random.Range(0,2);
-            Instantiate(enemyPrefabs[rngType], spawnPoints[rngPoint].position, Quaternion.identity);
-        }
-    }
-
-    //y30 z75 x40->x-40
-    //y30 z-75 x40->x-40
-    private void SpawnBook(){
-        if(bookCountdown>0f)
-        {
-            bookCountdown-=Time.deltaTime;
-        }else
-        {
-            bookCountdown=bookCooldown;
-            int rngLR = UnityEngine.Random.Range(0,2);
-            int rngX = UnityEngine.Random.Range(-40,41);
-            int rngType = UnityEngine.Random.Range(0,3);
-            Vector3 newPos = new Vector3(rngX, 40, rngLR>0?75:-75);
-            GameObject inst = Instantiate(bookPrefab, newPos, Quaternion.identity);
-            inst.GetComponent<Book>().SwitchBookType(rngType);
-        }
-    }
-
-    public void RestartButton()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 }

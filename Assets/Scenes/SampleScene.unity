@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 92480554}
   - component: {fileID: 92480553}
   - component: {fileID: 92480552}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: BananaDummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2030,7 +2030,7 @@ GameObject:
   - component: {fileID: 611994788}
   - component: {fileID: 611994787}
   m_Layer: 0
-  m_Name: Book (4)
+  m_Name: Book
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2430,7 +2430,7 @@ GameObject:
   - component: {fileID: 701801209}
   - component: {fileID: 701801208}
   m_Layer: 0
-  m_Name: Book (5)
+  m_Name: Book
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2694,7 +2694,7 @@ GameObject:
   - component: {fileID: 731121421}
   - component: {fileID: 731121420}
   m_Layer: 0
-  m_Name: Book (3)
+  m_Name: Book
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2809,6 +2809,67 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 731121418}
   m_Mesh: {fileID: -66333826979096818, guid: 5d9bcd8f5431f594fb9af5aca146d32e, type: 3}
+--- !u!1 &806366757
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 806366758}
+  - component: {fileID: 806366759}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &806366758
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806366757}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &806366759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806366757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb796c85efb46ce45bd7e155104c2b56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoints:
+  - {fileID: 1829476937}
+  - {fileID: 385075656}
+  enemyPrefabs:
+  - {fileID: 4260915843110444424, guid: f2b52020616ac454a847d2d3a9243f99, type: 3}
+  - {fileID: 971629405762384182, guid: 251ec6902ea28824689de558e212a73a, type: 3}
+  spawnCooldown: 20
+  spawnCDMinimum: 5
+  scoreText: {fileID: 352978190}
+  bookCooldown: 7
+  bookPrefab: {fileID: 9066629610449093806, guid: f47eab00cfdb9f344902fc0eeb061310,
+    type: 3}
+  goPanel: {fileID: 1507231165}
+  faceText: {fileID: 1556817222}
+  appleNText: {fileID: 1583932955}
+  bananaNText: {fileID: 1762510164}
+  watermelonNText: {fileID: 159997056}
 --- !u!1 &814418474
 GameObject:
   m_ObjectHideFlags: 0
@@ -2822,7 +2883,7 @@ GameObject:
   - component: {fileID: 814418476}
   - component: {fileID: 814418478}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: FruitNText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2968,24 +3029,7 @@ MonoBehaviour:
   - {fileID: 8745404927751786475, guid: 2b537160daa8f944fb3d4f45cf6c3c89, type: 3}
   - {fileID: 4716056250134069532, guid: b68d4a1ffc3e2914bb2ab14ec46b3b7d, type: 3}
   - {fileID: 8286990786558620001, guid: ee6f8681cff1ea14680a4cda3e4e934a, type: 3}
-  bookNameText: {fileID: 1556817222}
-  appleNText: {fileID: 1583932955}
-  bananaNText: {fileID: 1762510164}
-  watermelonNText: {fileID: 159997056}
   playerHealthN: {fileID: 636839625}
-  spawnPoints:
-  - {fileID: 1829476937}
-  - {fileID: 385075656}
-  enemyPrefabs:
-  - {fileID: 4260915843110444424, guid: f2b52020616ac454a847d2d3a9243f99, type: 3}
-  - {fileID: 971629405762384182, guid: 251ec6902ea28824689de558e212a73a, type: 3}
-  spawnCooldown: 12
-  spawnCDMinimum: 4
-  scoreText: {fileID: 352978190}
-  bookCooldown: 7
-  bookPrefab: {fileID: 9066629610449093806, guid: f47eab00cfdb9f344902fc0eeb061310,
-    type: 3}
-  goPanel: {fileID: 1507231165}
 --- !u!143 &817053342
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3099,7 +3143,7 @@ GameObject:
   - component: {fileID: 978727280}
   - component: {fileID: 978727279}
   m_Layer: 0
-  m_Name: Book (6)
+  m_Name: Book
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3226,7 +3270,7 @@ GameObject:
   - component: {fileID: 1192847065}
   - component: {fileID: 1192847064}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: BananaN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3494,7 +3538,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1298493175}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: HoldingPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3534,7 +3578,7 @@ GameObject:
   - component: {fileID: 1320408088}
   - component: {fileID: 1320408087}
   - component: {fileID: 1320408086}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: AppleDummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4083,7 +4127,7 @@ GameObject:
   - component: {fileID: 1556817223}
   - component: {fileID: 1556817222}
   m_Layer: 5
-  m_Name: BookNameText
+  m_Name: FaceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4129,7 +4173,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BookName
+  m_text: FaceText
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4549,7 +4593,7 @@ GameObject:
   - component: {fileID: 1740903798}
   - component: {fileID: 1740903797}
   m_Layer: 5
-  m_Name: Text (TMP) (2)
+  m_Name: WatermelonN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5051,7 +5095,7 @@ GameObject:
   - component: {fileID: 1919616246}
   - component: {fileID: 1919616245}
   - component: {fileID: 1919616244}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: WatermelonDummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5187,7 +5231,7 @@ GameObject:
   - component: {fileID: 1935475862}
   - component: {fileID: 1935475861}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: AppleN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5985,6 +6029,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cylin
       objectReference: {fileID: 0}
+    - target: {fileID: 4260915843110444424, guid: f2b52020616ac454a847d2d3a9243f99,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2b52020616ac454a847d2d3a9243f99, type: 3}
 --- !u!33 &5198791767397691230
@@ -6021,6 +6070,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Rolly
+      objectReference: {fileID: 0}
+    - target: {fileID: 971629405762384182, guid: 251ec6902ea28824689de558e212a73a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5703771566318760076, guid: 251ec6902ea28824689de558e212a73a,
         type: 3}

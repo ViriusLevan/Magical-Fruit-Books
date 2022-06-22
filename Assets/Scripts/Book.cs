@@ -14,7 +14,7 @@ public class Book : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        AdjustName();
     }
 
     // Update is called once per frame
@@ -26,6 +26,12 @@ public class Book : MonoBehaviour
     public void SwitchBookType(int i){
         fruitBookType = (FruitType)i;
         fruitN = Random.Range(1,4);
+    }
+
+    private void AdjustName()
+    {
+        this.gameObject.name 
+            = $"{fruitBookType.ToString()} Book";
     }
 
     public void OpenBook()

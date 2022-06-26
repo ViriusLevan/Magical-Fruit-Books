@@ -14,6 +14,7 @@ public class ArenaObjCylinder : MonoBehaviour
         originZ = transform.position.z;
         speedRNG=UnityEngine.Random.Range(0,6);
         goForward = UnityEngine.Random.Range(0,2)>0 ? true : false;
+        objectHeight= transform.localScale.y;
     }
 
     // Update is called once per frame

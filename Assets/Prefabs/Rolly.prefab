@@ -133,5 +133,7 @@ MonoBehaviour:
   accelForce: 10
   health: 4
   selfRB: {fileID: 971629405762384176}
+  explosionPrefab: {fileID: 4168962285719015981, guid: db148dc4b7bd126478a3dd6aea08de28,
+    type: 3}
   et: 1
   damage: 5

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8286990786558620006}
   m_Layer: 0
   m_Name: Watermelon
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,7 +134,7 @@ MonoBehaviour:
   damageAmount: 10
   hitSound: {fileID: 0}
   selfRB: {fileID: 8286990786558620007}
-  explosionPrefab: {fileID: 0}
-  explosionRadius: 0
-  explosionForce: 0
-  timeBeforeExplosion: 0
+  explosionPrefab: {fileID: 4168962285719015981, guid: 289467264b0d3244b95894deb82f49e9,
+    type: 3}
+  explosionRadius: 5
+  explosionForce: 25

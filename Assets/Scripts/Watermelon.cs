@@ -9,7 +9,6 @@ public class Watermelon : Fruit
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float explosionRadius;
     [SerializeField] private float explosionForce;
-    [SerializeField] private float timeBeforeExplosion;
 
 
     // Start is called before the first frame update
@@ -26,27 +25,38 @@ public class Watermelon : Fruit
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(!collision.gameObject.CompareTag("Player"))
+        if(!collision.gameObject.CompareTag("Player") 
+            && !collision.gameObject.CompareTag("Projectile"))
         {
+            Instantiate(explosionPrefab, transform.position, transform.rotation);
+            Rigidbody rb =collision.gameObject.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddExplosionForce(
+                    explosionForce, transform.position, explosionRadius);
+            }
+
+            if (collision.gameObject.TryGetComponent(out IDamageable dmgInterface))
+            {
+                dmgInterface.TakeDamage(damageAmount);
+            }
             //apply force to nearby rigidbodies with colliders and damage to IDamageables
             Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
             foreach (Collider nearbyObject in colliders)
             {
-                Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
-                if (rb != null)
+                Rigidbody rb1 = nearbyObject.GetComponent<Rigidbody>();
+                if (rb1 != null)
                 {
-                    rb.AddExplosionForce(
+                    rb1.AddExplosionForce(
                         explosionForce, transform.position, explosionRadius);
                 }
 
-                if (collision.gameObject.TryGetComponent(out IDamageable dmgInterface))
+                if (nearbyObject.TryGetComponent(out IDamageable dmgInt))
                 {
-                    dmgInterface.TakeDamage(damageAmount);
+                    dmgInt.TakeDamage(damageAmount);
                 }
             }
-
             
-            //TODO play hit sound
             Destroy(gameObject);
         }
     }

@@ -4,11 +4,14 @@ using UnityEngine;
 
 public abstract class Robot : MonoBehaviour, IDamageable
 {
-    public float movespeed, turnRate, accelForce;
-    public int health;
-    public Rigidbody selfRB;
+    [SerializeField]protected float movespeed;
+    [SerializeField]protected float turnRate;
+    [SerializeField]protected float accelForce;
+    [SerializeField]protected int health;
+    [SerializeField]protected Rigidbody selfRB;
     public delegate void OnRobotDeath(int score);
     public static event OnRobotDeath robotDeath;
+    [SerializeField] protected GameObject explosionPrefab;
     public enum EnemyType
     {
         Cylin, Rolly
@@ -29,9 +32,14 @@ public abstract class Robot : MonoBehaviour, IDamageable
     {
     }
 
+    public int GetHealth()
+    {
+        return health;
+    }
+
 
     protected void Die(){
-        //TODO add explosion effect
+        Instantiate(explosionPrefab, transform.position, transform.rotation);
         robotDeath?.Invoke(scoreTable[et]);
         Destroy(this.gameObject);
     }

@@ -9,12 +9,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]private Transform[] spawnPoints;
     [SerializeField]private GameObject[] enemyPrefabs;
     [SerializeField]private float spawnCooldown=20f;
-    [SerializeField]private float spawnCDMinimum=5f;
+    [SerializeField]private float spawnCDMinimum=4f;
     private float spawnCountdown = 0f;
     private int score=0;
     [SerializeField]private TextMeshProUGUI scoreText;
 
-    [SerializeField]private float bookCooldown=7f;
+    [SerializeField]private float bookCooldown=5f;
     private float bookCountdown=0f;
     [SerializeField] private GameObject bookPrefab;
     [SerializeField] private GameObject goPanel;
@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour
         scoreText.text=score.ToString();
     }
 
+    private bool doubleSpawned=false;
     private void SpawnEnemies(){
         if(spawnCountdown>0f)
         {
@@ -80,17 +81,25 @@ public class GameManager : MonoBehaviour
         else
         {
             if(enemyCount<enemyLimit){
+                spawnCountdown=spawnCooldown;
                 //chance to immediately spawn another enemy
-                if(Random.Range(0,10)>6)
+                if(!doubleSpawned && Random.Range(0,10)>6)
                 {
-                    spawnCountdown=spawnCooldown;
+                    spawnCountdown=0;
+                    doubleSpawned=true;
+                }
+                else if(doubleSpawned)
+                {
+                    doubleSpawned=false;    
                 }
                 if(spawnCooldown>spawnCDMinimum+0.5f)
                     spawnCooldown-=0.5f;
                 int rngPoint = UnityEngine.Random.Range(0,2);
                 int rngType = UnityEngine.Random.Range(0,2);
-                GameObject inst = Instantiate(enemyPrefabs[rngType], spawnPoints[rngPoint].position, Quaternion.identity, enemyParent);
+                GameObject inst = Instantiate(enemyPrefabs[rngType], 
+                    spawnPoints[rngPoint].position, Quaternion.identity, enemyParent);
                 inst.name = inst.name.Replace("(Clone)","").Trim();
+                enemyCount+=1;
             }
         }
     }
@@ -103,6 +112,7 @@ public class GameManager : MonoBehaviour
 //Spawn Area
     //y30 z75 x40->x-40
     //y30 z-75 x40->x-40
+    private bool has2xBookTrig=false;
     private void SpawnBook(){
         if(bookCountdown>0f)
         {
@@ -111,9 +121,14 @@ public class GameManager : MonoBehaviour
         {
             if(bookCount<bookLimit){
                 //chance to immediately spawn another book
-                if(Random.Range(0,10)>6)
+                if(!has2xBookTrig && Random.Range(0,10)>6)
                 {
                     spawnCountdown=spawnCooldown;
+                    has2xBookTrig=true;
+                }
+                else if(has2xBookTrig)
+                {
+                    has2xBookTrig=false;
                 }
                 bookCountdown=bookCooldown;
                 int rngLR = UnityEngine.Random.Range(0,2);

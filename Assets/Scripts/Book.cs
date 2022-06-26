@@ -10,6 +10,7 @@ public class Book : MonoBehaviour
     public enum FruitType{Apple, Banana, Watermelon};
     public FruitType fruitBookType;
     public int fruitN;
+    public bool used=false;
     
     public delegate void OnBookDestroyed();
     public static event OnBookDestroyed bookDestroyed;
@@ -18,6 +19,7 @@ public class Book : MonoBehaviour
     void Start()
     {
         AdjustName();
+        DetermineFruitN();
     }
 
     // Update is called once per frame
@@ -26,9 +28,14 @@ public class Book : MonoBehaviour
         
     }
 
-    public void SwitchBookType(int i){
+    public void SwitchBookType(int i)
+    {
         fruitBookType = (FruitType)i;
-        fruitN = Random.Range(1,4);
+    }
+
+    private void DetermineFruitN()
+    {
+        fruitN = Random.Range(1+(2-((int)fruitBookType)),6-((int)fruitBookType)*2);
     }
 
     private void AdjustName()
@@ -40,11 +47,12 @@ public class Book : MonoBehaviour
     public void OpenBook()
     {
         openedBook?.Invoke(fruitBookType, fruitN, this);
+        used=true;
     }
 
     public void DestroyBook()
     {
         bookDestroyed?.Invoke();
-        Destroy(this.gameObject);
+        Destroy(this?.gameObject);
     }
 }

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8745404927751786472}
   m_Layer: 0
   m_Name: Apple
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f4c163e3a6a6f54db222c2914b978c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 40
-  damageAmount: 4
+  forwardSpeed: 50
+  damageAmount: 2
   hitSound: {fileID: 0}
   selfRB: {fileID: 8745404927751786473}

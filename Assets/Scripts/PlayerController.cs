@@ -16,11 +16,13 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float fireCooldown=0.5f;
     private float fireCounter=0f;
+    [SerializeField] private float boostTime=5f;
+    private float boostCountdown=0f;
 
     [SerializeField] private int playerHealth=100;
 
     float cameraPitch = 0.0f;
-    float velocityY = 0.0f;
+    private float velocityY = 0.0f, velocityX=0.0f;
     private float charHorSpeed=12.0f;
     [SerializeField]CharacterController controller;
 
@@ -40,12 +42,10 @@ public class PlayerController : MonoBehaviour
     public static event OnPlayerDeath playerDies;
     public delegate void OnFruitNChanged(Dictionary<Book.FruitType,int> nFruits);
     public static event OnFruitNChanged fruitNChanged;
-
     public delegate void OnDifferentHitBook(string bookname);
     public static event OnDifferentHitBook changeFaceText;
     public delegate void OnTextNotNeeded();
     public static event OnTextNotNeeded hideFaceText,showFaceText;
-
     private float sWheelInput=0f;
     void Start()
     {
@@ -128,6 +128,13 @@ public class PlayerController : MonoBehaviour
                 fireCounter=fireCooldown;
             }
         }
+        else if(Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            if(currentlyHolding==Book.FruitType.Apple && nOfFruits[currentlyHolding]>0)
+            {
+                AppleBoost();
+            }
+        }
         if(fireCounter>0){fireCounter-=Time.deltaTime;}
     }
 
@@ -137,6 +144,13 @@ public class PlayerController : MonoBehaviour
         Vector3 newPos = playerCamera.transform.position + (playerCamera.transform.forward*1f);
         Instantiate(fruits[ind], newPos, playerCamera.transform.rotation);
         nOfFruits[currentlyHolding]-=1;
+        fruitNChanged?.Invoke(nOfFruits);
+    }
+
+    private void AppleBoost()
+    {
+        nOfFruits[Book.FruitType.Apple]-=1;
+        boostCountdown=boostTime;
         fruitNChanged?.Invoke(nOfFruits);
     }
 
@@ -198,7 +212,7 @@ public class PlayerController : MonoBehaviour
                 {
                     showFaceText();
                 }
-                if(Input.GetKeyDown(KeyCode.E) && !isBookOpen)
+                if(Input.GetKeyDown(KeyCode.E) && !isBookOpen && !temp.used)
                 {
                     temp.OpenBook();
                     isBookOpen=true;
@@ -214,9 +228,9 @@ public class PlayerController : MonoBehaviour
         {
             if(hit.transform.TryGetComponent(out Robot r))
             {
-                if(!lastRobotName.Equals($"{hit.transform.gameObject.name} \nHP:{r.health}"))
+                if(!lastRobotName.Equals($"{hit.transform.gameObject.name} \nHP:{r.GetHealth()}"))
                 {
-                    lastRobotName = $"{hit.transform.gameObject.name} \nHP:{r.health}";
+                    lastRobotName = $"{hit.transform.gameObject.name} \nHP:{r.GetHealth()}";
                     changeFaceText?.Invoke(lastRobotName);
                 }
                 else
@@ -275,9 +289,18 @@ public class PlayerController : MonoBehaviour
             }
         }
         velocityY += gravity * Time.deltaTime;
+        if(boostCountdown>0)
+        {
+            velocityX = charHorSpeed*2f;
+            boostCountdown-=Time.deltaTime;
+        }
+        else
+        {
+            velocityX = charHorSpeed;
+        }
 
         Vector3 velocity =
-            (transform.forward * currentDir.y + transform.right * currentDir.x) * charHorSpeed
+            (transform.forward * currentDir.y + transform.right * currentDir.x) * velocityX
             + Vector3.up * velocityY;
 
         controller.Move(velocity * Time.deltaTime);

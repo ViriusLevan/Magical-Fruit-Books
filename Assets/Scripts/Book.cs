@@ -15,10 +15,14 @@ public class Book : MonoBehaviour
     public delegate void OnBookDestroyed();
     public static event OnBookDestroyed bookDestroyed;
 
+    [SerializeField] private GameObject containerSphere;
+    [SerializeField] private Material[] glassMaterials;
+
     // Start is called before the first frame update
     void Start()
     {
         AdjustName();
+        AdjustColor();
         DetermineFruitN();
     }
 
@@ -28,9 +32,17 @@ public class Book : MonoBehaviour
         
     }
 
+    public void AdjustColor()
+    {
+        containerSphere.GetComponent<Renderer>().material=glassMaterials[(int)fruitBookType];
+    }
+
     public void SwitchBookType(int i)
     {
         fruitBookType = (FruitType)i;
+        AdjustName();
+        AdjustColor();
+        DetermineFruitN();
     }
 
     private void DetermineFruitN()

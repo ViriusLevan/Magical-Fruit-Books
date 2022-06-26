@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float boostTime=5f;
     private float boostCountdown=0f;
 
-    [SerializeField] private int playerHealth=100;
+    [SerializeField] private int playerHealth=100,maxPlayerHealth=100;
 
     float cameraPitch = 0.0f;
     private float velocityY = 0.0f, velocityX=0.0f;
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
     public delegate void OnTextNotNeeded();
     public static event OnTextNotNeeded hideFaceText,showFaceText;
     private float sWheelInput=0f;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -84,16 +86,22 @@ public class PlayerController : MonoBehaviour
         fruitNChanged?.Invoke(nOfFruits);
     }
 
-    public TextMeshProUGUI playerHealthN;
+    [Header("Health")]
+    [SerializeField] private TextMeshProUGUI playerHealthN;
+    [SerializeField] private Image healthBar;
 
     public void TakeDamage(int damage)
     {
         playerHealth-=damage;
-        playerHealthN.text=playerHealth.ToString();
         if(playerHealth<=0)
         {
             playerDies?.Invoke();
         }
+    }
+    private void UpdateHealthBar()
+    {
+        playerHealthN.text=playerHealth.ToString();
+        healthBar.fillAmount = 1.0f * playerHealth/maxPlayerHealth;
     }
 
 
@@ -106,6 +114,8 @@ public class PlayerController : MonoBehaviour
             ObjectRaycast();
             WeaponInput();
         }
+        UpdateHealthBar();
+        UpdateBoostBar();
     }
 
     
@@ -147,11 +157,27 @@ public class PlayerController : MonoBehaviour
         fruitNChanged?.Invoke(nOfFruits);
     }
 
+    [Header("Boost")]
+    [SerializeField] private Image boostBar;
+    [SerializeField] private TextMeshProUGUI boostNText;
+    [SerializeField] private GameObject boostPanel;
     private void AppleBoost()
     {
         nOfFruits[Book.FruitType.Apple]-=1;
         boostCountdown=boostTime;
         fruitNChanged?.Invoke(nOfFruits);
+    }
+    private void UpdateBoostBar()
+    {
+        if(boostCountdown>0){
+            boostPanel.SetActive(true);
+            boostBar.fillAmount = boostCountdown/boostTime;
+            boostNText.text= boostCountdown.ToString();
+        }
+        else
+        {
+            boostPanel.SetActive(false);
+        }
     }
 
     private void HoldingStateAdvance(bool next)

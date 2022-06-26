@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public abstract class Robot : MonoBehaviour, IDamageable
 {
-    [SerializeField]protected float movespeed;
-    [SerializeField]protected float turnRate;
-    [SerializeField]protected float accelForce;
-    [SerializeField]protected int health;
+    [SerializeField]protected float movespeed,turnRate,accelForce;
+    [SerializeField]protected int health, maxHealth;
+    
     [SerializeField]protected Rigidbody selfRB;
     public delegate void OnRobotDeath(int score);
     public static event OnRobotDeath robotDeath;
     [SerializeField] protected GameObject explosionPrefab;
+    [SerializeField] protected Image healthBar;
+
     public enum EnemyType
     {
         Cylin, Rolly
@@ -47,6 +48,7 @@ public abstract class Robot : MonoBehaviour, IDamageable
     public void TakeDamage(int dAmount)
     {
         health-=dAmount;
+        healthBar.fillAmount = 1.0f* health/maxHealth;
         if(health<=0)
             Die();
     }

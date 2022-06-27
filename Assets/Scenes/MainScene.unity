@@ -3325,6 +3325,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb796c85efb46ce45bd7e155104c2b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreText: {fileID: 352978190}
+  goPanel: {fileID: 1507231165}
+  faceText: {fileID: 1556817222}
+  appleNText: {fileID: 1583932955}
+  bananaNText: {fileID: 1762510164}
+  watermelonNText: {fileID: 159997056}
+  enemyParent: {fileID: 1228660997}
+  bookParent: {fileID: 879203932}
   spawnPoints:
   - {fileID: 1829476937}
   - {fileID: 385075656}
@@ -3333,19 +3341,11 @@ MonoBehaviour:
   - {fileID: 971629405762384182, guid: 251ec6902ea28824689de558e212a73a, type: 3}
   spawnCooldown: 10
   spawnCDMinimum: 2
-  scoreText: {fileID: 352978190}
+  enemyLimit: 50
   bookCooldown: 5
   bookPrefab: {fileID: 9066629610449093806, guid: f47eab00cfdb9f344902fc0eeb061310,
     type: 3}
-  goPanel: {fileID: 1507231165}
-  faceText: {fileID: 1556817222}
-  appleNText: {fileID: 1583932955}
-  bananaNText: {fileID: 1762510164}
-  watermelonNText: {fileID: 159997056}
-  enemyLimit: 50
   bookLimit: 100
-  enemyParent: {fileID: 1228660997}
-  bookParent: {fileID: 879203932}
 --- !u!1 &814418474
 GameObject:
   m_ObjectHideFlags: 0
@@ -9326,16 +9326,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1316533508355045057, guid: f2b52020616ac454a847d2d3a9243f99,
-        type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 86345927}
-    - target: {fileID: 1316533508355045057, guid: f2b52020616ac454a847d2d3a9243f99,
-        type: 3}
-      propertyPath: maxFiringDist
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 4260915843110444424, guid: f2b52020616ac454a847d2d3a9243f99,
         type: 3}
       propertyPath: m_Name
@@ -9564,6 +9554,7 @@ MonoBehaviour:
   explosionPrefab: {fileID: 0}
   healthBar: {fileID: 0}
   et: 0
+  enemyContainer: {fileID: 0}
 --- !u!1001 &8016788274794777480
 PrefabInstance:
   m_ObjectHideFlags: 0

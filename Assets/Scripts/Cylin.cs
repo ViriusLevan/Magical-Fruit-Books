@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Cylin : Robot
 {
-    [SerializeField] private Transform target;
     [SerializeField] private Transform firingPoint;
     [SerializeField] private GameObject bullet;
     [SerializeField] private float firingCooldown=2f;
@@ -12,18 +11,13 @@ public class Cylin : Robot
     private float firingCountdown=0f;
     private Vector3 aimModification = new Vector3(0,-1,0);
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        scoreTable = new Dictionary<EnemyType, int>(){
-            {EnemyType.Cylin,8},{EnemyType.Rolly,5}
-        };
-        if(target==null){
-            target = GameObject.FindGameObjectWithTag("Player").transform;
-        }
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         if(firingCountdown>0)
         {
@@ -31,6 +25,7 @@ public class Cylin : Robot
         }
         TurnToTarget();
         CheckDistance();
+        base.Update();
     }
 
     void FixedUpdate()

@@ -9,11 +9,8 @@ public class Rolly : Robot
     [SerializeField]private int damage;
 
     // Start is called before the first frame update
-    void Start()
+     protected override void Start()
     {
-        scoreTable = new Dictionary<EnemyType, int>(){
-            {EnemyType.Cylin,8},{EnemyType.Rolly,5}
-        };
         directions = new List<Vector3>(){
             Vector3.forward
             ,new Vector3(1,0,1)
@@ -24,12 +21,13 @@ public class Rolly : Robot
             ,Vector3.left
             ,new Vector3(-1,0,1)
         };
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        
+        base.Update();
     }
 
     void FixedUpdate()

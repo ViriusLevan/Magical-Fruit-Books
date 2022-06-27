@@ -1,33 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Manager")]
-    [SerializeField]private Transform[] spawnPoints;
-    [SerializeField]private GameObject[] enemyPrefabs;
-    [SerializeField]private float spawnCooldown=20f;
-    [SerializeField]private float spawnCDMinimum=4f;
-    private float spawnCountdown = 0f;
+    public static GameManager Instance;
+
     private int score=0;
     [SerializeField]private TextMeshProUGUI scoreText;
 
-    [SerializeField]private float bookCooldown=5f;
-    private float bookCountdown=0f;
-    [SerializeField] private GameObject bookPrefab;
     [SerializeField] private GameObject goPanel;
     private bool playerIsDead=false;
     
     [SerializeField] private TextMeshProUGUI faceText, appleNText,bananaNText,watermelonNText;
-    private int enemyCount=2;
-    private int bookCount=5;
-    [SerializeField] private int enemyLimit=50;
-    [SerializeField] private int bookLimit =100;
-    [SerializeField] private Transform enemyParent, bookParent;
+    
+    [SerializeField] public Transform enemyParent, bookParent;
 
-    // Start is called before the first frame update
+    void Awake()
+    {
+        if(Instance==null)
+        {
+            Instance=this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
     void Start()
     {
         Robot.robotDeath+=IncreaseScore;
@@ -72,6 +75,14 @@ public class GameManager : MonoBehaviour
         scoreText.text=score.ToString();
     }
 
+    [Header("Enemy")]
+    [SerializeField]private Transform[] spawnPoints;
+    [SerializeField]private GameObject[] enemyPrefabs;
+    [SerializeField]private float spawnCooldown=20f;
+    [SerializeField]private float spawnCDMinimum=4f;
+    private float spawnCountdown = 0f;
+    [SerializeField] private int enemyLimit=50;
+    private int enemyCount=2;
     private bool doubleSpawned=false;
     private void SpawnEnemies(){
         if(spawnCountdown>0f)
@@ -96,13 +107,20 @@ public class GameManager : MonoBehaviour
                     spawnCooldown-=0.5f;
                 int rngPoint = UnityEngine.Random.Range(0,2);
                 int rngType = UnityEngine.Random.Range(0,2);
-                GameObject inst = Instantiate(enemyPrefabs[rngType], 
+                GameObject inst = Instantiate(enemyPrefabs[rngType],
                     spawnPoints[rngPoint].position, Quaternion.identity, enemyParent);
                 inst.name = inst.name.Replace("(Clone)","").Trim();
                 enemyCount+=1;
             }
         }
     }
+
+    [Header("Book")]
+    [SerializeField]private float bookCooldown=5f;
+    private float bookCountdown=0f;
+    [SerializeField] private GameObject bookPrefab;
+    [SerializeField] private int bookLimit =100;
+    private int bookCount=5;
 
     private void ReduceBookCount()
     {

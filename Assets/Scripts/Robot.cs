@@ -12,6 +12,7 @@ public abstract class Robot : MonoBehaviour, IDamageable
     public static event OnRobotDeath robotDeath;
     [SerializeField] protected GameObject explosionPrefab;
     [SerializeField] protected Image healthBar;
+    [SerializeField] protected Transform target;
 
     public enum EnemyType
     {
@@ -20,17 +21,30 @@ public abstract class Robot : MonoBehaviour, IDamageable
     protected Dictionary<EnemyType,int> scoreTable;
     public EnemyType et;
 
+    [SerializeField] private GameObject enemyContainer;
+
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         scoreTable = new Dictionary<EnemyType, int>(){
             {EnemyType.Cylin,8},{EnemyType.Rolly,5}
         };
-    }
 
+        if(target==null){
+            target = GameObject.FindGameObjectWithTag("Player").transform;
+        }
+        GameObject container = Instantiate(enemyContainer, GameManager.Instance.enemyParent);
+        transform.parent = container.transform;
+        barTransform = container.transform.GetChild(0);
+        healthBar = container.transform.GetChild(0).GetChild(0)
+            .GetChild(0).GetChild(1).GetComponent<Image>();
+    }
+    Transform barTransform;
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
+        barTransform.position = transform.position;
+        barTransform.LookAt(target);
     }
 
     public int GetHealth()
@@ -41,13 +55,14 @@ public abstract class Robot : MonoBehaviour, IDamageable
     protected void Die(){
         Instantiate(explosionPrefab, transform.position, transform.rotation);
         robotDeath?.Invoke(scoreTable[et]);
-        Destroy(this.gameObject);
+        Destroy(transform.parent.gameObject);
     }
 
     public void TakeDamage(int dAmount)
     {
         health-=dAmount;
-        healthBar.fillAmount = 1.0f* health/maxHealth;
+        if(healthBar!=null)
+            healthBar.fillAmount = 1.0f* health/maxHealth;
         if(health<=0)
             Die();
     }

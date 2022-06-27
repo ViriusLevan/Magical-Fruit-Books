@@ -132,7 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardSpeed: 25
   damageAmount: 10
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 5c9f6e1ac72fc4a42a4d4eb6cdf8655a, type: 3}
   selfRB: {fileID: 8286990786558620007}
   explosionPrefab: {fileID: 4168962285719015981, guid: 289467264b0d3244b95894deb82f49e9,
     type: 3}

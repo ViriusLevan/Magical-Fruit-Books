@@ -38,7 +38,6 @@ public abstract class Robot : MonoBehaviour, IDamageable
         return health;
     }
 
-
     protected void Die(){
         Instantiate(explosionPrefab, transform.position, transform.rotation);
         robotDeath?.Invoke(scoreTable[et]);

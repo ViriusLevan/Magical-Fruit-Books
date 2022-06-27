@@ -173,5 +173,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardSpeed: 60
   damageAmount: 6
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: d827830d94441ca47996fdce60800dde, type: 3}
   selfRB: {fileID: 4716056250134069522}

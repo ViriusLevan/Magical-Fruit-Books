@@ -57,6 +57,7 @@ public class Watermelon : Fruit
                 }
             }
             
+            AudioSource.PlayClipAtPoint(base.hitSound,transform.position);
             Destroy(gameObject);
         }
     }

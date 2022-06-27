@@ -8,7 +8,7 @@ public class Cylin : Robot
     [SerializeField] private Transform firingPoint;
     [SerializeField] private GameObject bullet;
     [SerializeField] private float firingCooldown=2f;
-    [SerializeField] private float maxFiringDist = 30f;
+    [SerializeField] private float maxCloseup = 30f;
     private float firingCountdown=0f;
     private Vector3 aimModification = new Vector3(0,-1,0);
     // Start is called before the first frame update
@@ -59,17 +59,14 @@ public class Cylin : Robot
     private void CheckDistance()
     {
         float dist = Vector3.Distance(target.position, transform.position);
-        if(dist<=maxFiringDist)
-        {
-            CheckAngle();
-        }
-        else
+        if(dist>=maxCloseup)
         {
             MoveForward();
         }
+        CheckFiringAngle();
     }
 
-    private void CheckAngle()
+    private void CheckFiringAngle()
     {
         float forwardAngle = Vector3.Angle(firingPoint.transform.forward
             , (target.position+aimModification-transform.position));

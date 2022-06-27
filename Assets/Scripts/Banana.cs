@@ -24,7 +24,7 @@ public class Banana : Fruit
                 dmgInterface.TakeDamage(damageAmount);
             }
 
-            //TODO play hit sound
+            AudioSource.PlayClipAtPoint(base.hitSound,transform.position);
             Destroy(gameObject);
         }
     }

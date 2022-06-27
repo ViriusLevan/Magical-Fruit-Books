@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
     {
         nOfFruits[ft]+=i;
         fruitNChanged?.Invoke(nOfFruits);
+        PlayFruitGainedSound((int) ft);
     }
 
     [Header("Health")]
@@ -96,6 +97,15 @@ public class PlayerController : MonoBehaviour
         if(playerHealth<=0)
         {
             playerDies?.Invoke();
+            PlayDamageTakenSound(3);
+        }
+        else if(damage<=5)
+        {
+            PlayDamageTakenSound(2);
+        }
+        else
+        {
+            PlayDamageTakenSound(1);
         }
     }
     private void UpdateHealthBar()
@@ -166,18 +176,39 @@ public class PlayerController : MonoBehaviour
         nOfFruits[Book.FruitType.Apple]-=1;
         boostCountdown=boostTime;
         fruitNChanged?.Invoke(nOfFruits);
+        PlayBoostSound();
     }
     private void UpdateBoostBar()
     {
         if(boostCountdown>0){
             boostPanel.SetActive(true);
             boostBar.fillAmount = boostCountdown/boostTime;
-            boostNText.text= boostCountdown.ToString();
+            boostNText.text= boostCountdown.ToString("0.00");
         }
         else
         {
             boostPanel.SetActive(false);
         }
+    }
+
+    [Header("Zero Distance SFX")]
+    [SerializeField] private AudioClip[] fruitGains;
+    [SerializeField] private AudioClip[] damageTaken;//or death
+    [SerializeField] private AudioClip boostActivate;
+    [SerializeField] private AudioSource fGainSource, damagedSource, boostSource;
+    private void PlayFruitGainedSound(int i)
+    {
+        fGainSource.clip = fruitGains[i];
+        fGainSource.Play();
+    }
+    private void PlayDamageTakenSound(int i)
+    {
+        damagedSource.clip = damageTaken[i];
+        damagedSource.Play();
+    }
+    private void PlayBoostSound()
+    {
+        boostSource.Play();
     }
 
     private void HoldingStateAdvance(bool next)

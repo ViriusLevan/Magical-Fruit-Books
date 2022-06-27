@@ -400,7 +400,7 @@ MonoBehaviour:
   firingPoint: {fileID: 3856227348223456994}
   bullet: {fileID: 7289369693382198050, guid: b5e186c253bdee547bea549edfb2b91e, type: 3}
   firingCooldown: 2
-  maxFiringDist: 15
+  maxCloseup: 10
 --- !u!1 &7373496028263364339
 GameObject:
   m_ObjectHideFlags: 0
